@@ -7,6 +7,8 @@ const DecanaturaSchema = new mongoose.Schema({
   correo: String,
   telefono: String,
   activo: Boolean
+}, {
+  collection: "Decanaturas"
 });
 
-module.exports = mongoose.model("Decanaturas", DecanaturaSchema);
+module.exports = mongoose.model("Decanatura", DecanaturaSchema);
