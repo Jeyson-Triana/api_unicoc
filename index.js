@@ -11,6 +11,7 @@ const Matricula = require("./models/Matricula");
 const ReciboPago = require("./models/ReciboPago");
 const Credito = require("./models/Credito");
 const DescuentoPromocion = require("./models/DescuentoPromocion");
+const Decanatura = require("./models/Decanatura");
 
 const app = express();
 
