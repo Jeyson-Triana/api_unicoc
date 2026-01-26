@@ -203,22 +203,21 @@ app.get("/api/promociones/chatbot", async (req, res) => {
 });
 
 // Decanaturas
-const Decanatura = require("./models/Decanatura");
-
 app.get("/api/decanaturas/chatbot", async (req, res) => {
   try {
-    const { programa_id, programa } = req.query;
+    const programaId = parseInt(req.query.programa_id);
 
-    if (!programa_id && !programa) {
+    if (!programaId) {
       return res.json({ mensaje: "No se pudo identificar el programa académico." });
     }
 
-    const query = { activo: true };
-
-    if (programa_id) query.programa_id = Number(programa_id);
-    if (programa) query.programa = new RegExp(`^${programa}$`, "i");
-
-    const info = await Decanatura.findOne(query);
+    const info = await Decanatura.findOne({
+      activo: true,
+      $or: [
+        { programa_id: programaId },
+        { programa_id: programaId.toString() } // por si alguno quedó string
+      ]
+    });
 
     if (!info) {
       return res.json({
@@ -226,19 +225,21 @@ app.get("/api/decanaturas/chatbot", async (req, res) => {
       });
     }
 
-    const texto =
-`🎓 *Decanatura de ${info.programa}*
+    const texto = `🎓 *Decanatura de ${info.programa}*
 
 🏛️ ${info.decanatura}
 📧 Correo: ${info.correo}
-📞 Teléfono: ${info.telefono}`;
+📞 Teléfono: ${info.telefono}
+🕒 Horario: ${info.horario || "No disponible"}`;
 
     res.json({ mensaje: texto });
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({ mensaje: "Error consultando decanatura" });
   }
 });
+
 
 /* =====================================================
    🚀 SERVIDOR
