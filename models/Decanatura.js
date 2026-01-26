@@ -9,4 +9,4 @@ const DecanaturaSchema = new mongoose.Schema({
   activo: Boolean
 });
 
-module.exports = mongoose.model("Decanatura", DecanaturaSchema);
+module.exports = mongoose.model("Decanaturas", DecanaturaSchema);
