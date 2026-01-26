@@ -177,14 +177,33 @@ app.get("/api/pagos/get-banking", async (req, res) => {
 /* =====================================================
    🎁 PROMOCIONES
 ===================================================== */
-app.get("/api/promociones/get-active", async (req, res) => {
+app.get("/api/promociones/chatbot", async (req, res) => {
   try {
-    const promociones = await DescuentoPromocion.find({ estado: "activo" });
-    res.json({ promociones });
-  } catch {
-    res.status(500).json({ error: "Error interno" });
+    const promociones = await DescuentoPromocion.find({ estado: "activo" })
+      .sort({ fecha_inicio: 1 });
+
+    if (!promociones || promociones.length === 0) {
+      return res.json({
+        mensaje: "😕 En este momento no hay descuentos ni convenios activos."
+      });
+    }
+
+    let texto = "🎓 *Promociones y Convenios UNICOC*\n\n";
+
+    promociones.forEach((p, i) => {
+      texto += `*${i + 1}. ${p.nombre}* (${p.tipo})\n`;
+      texto += `📌 ${p.descripcion}\n`;
+      texto += `🎁 Beneficio: ${p.beneficios?.join(", ") || "No especificado"}\n`;
+      texto += `📅 Vigencia: ${p.fecha_inicio} a ${p.fecha_fin}\n\n`;
+    });
+
+    res.json({ mensaje: texto.trim() });
+
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error obteniendo promociones" });
   }
 });
+
 
 /* =====================================================
    🚀 SERVIDOR
