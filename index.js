@@ -12,6 +12,7 @@ const ReciboPago = require("./models/ReciboPago");
 const Credito = require("./models/Credito");
 const DescuentoPromocion = require("./models/DescuentoPromocion");
 const Decanatura = require("./models/Decanatura");
+const Bienestar = require("./models/Bienestar");
 
 const app = express();
 
@@ -241,6 +242,37 @@ app.get("/api/decanaturas/chatbot", async (req, res) => {
   }
 });
 
+// Bienestar Universitario
+app.get("/api/bienestar/chatbot", async (req, res) => {
+  try {
+    const info = await Bienestar.findOne({ activo: true });
+
+    if (!info) {
+      return res.json({
+        mensaje: "No hay información de Bienestar disponible en este momento."
+      });
+    }
+
+    let texto = "💙 *Bienestar Universitario UNICOC*\n\n";
+    texto += "Estamos para apoyarte en tu vida académica y personal.\n\n";
+
+    if (info.servicios?.length) {
+      texto += "✨ *Servicios disponibles:*\n";
+      info.servicios.forEach(s => texto += `• ${s}\n`);
+      texto += "\n";
+    }
+
+    texto += `📧 Correo: ${info.correo}\n`;
+    texto += `📞 Teléfono: ${info.telefono}\n`;
+    texto += `🕒 Horario: ${info.horario}`;
+
+    res.json({ mensaje: texto });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error consultando bienestar" });
+  }
+});
 
 /* =====================================================
    🚀 SERVIDOR
