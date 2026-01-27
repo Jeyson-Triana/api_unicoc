@@ -13,6 +13,7 @@ const Credito = require("./models/Credito");
 const DescuentoPromocion = require("./models/DescuentoPromocion");
 const Decanatura = require("./models/Decanatura");
 const Bienestar = require("./models/Bienestar");
+const RecursosHumanos = require("./models/RecursosHumanos");
 
 const app = express();
 
@@ -273,6 +274,70 @@ app.get("/api/bienestar/chatbot", async (req, res) => {
     res.status(500).json({ mensaje: "Error consultando bienestar" });
   }
 });
+
+// Directorio de Contactos
+app.get("/api/directorio/area", async (req, res) => {
+  try {
+    const { area } = req.query;
+    if (!area) return res.status(400).json({ mensaje: "Falta parámetro area" });
+
+    const contactos = await DirectorioContacto.find({
+      area: new RegExp(area, "i"),
+      activo: true
+    });
+
+    if (!contactos.length) {
+      return res.json({ mensaje: "No se encontraron contactos para esta área." });
+    }
+
+    let texto = `📇 *Contactos - ${area}*\n\n`;
+
+    contactos.forEach((c, i) => {
+      texto += `*${i + 1}. ${c.nombre}*\n`;
+      texto += `🏢 ${c.cargo}\n`;
+      texto += `📧 ${c.correo || "No disponible"}\n`;
+      texto += `📞 ${c.telefono} Ext. ${c.extension}\n\n`;
+    });
+
+    res.json({ mensaje: texto.trim() });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error consultando directorio" });
+  }
+});
+
+// Búsqueda por nombre
+app.get("/api/directorio/nombre", async (req, res) => {
+  try {
+    const { nombre } = req.query;
+    if (!nombre) return res.status(400).json({ mensaje: "Falta parámetro nombre" });
+
+    const contactos = await DirectorioContacto.find({
+      nombre: new RegExp(nombre, "i"),
+      activo: true
+    });
+
+    if (!contactos.length) {
+      return res.json({ mensaje: "No se encontraron coincidencias." });
+    }
+
+    let texto = "📇 *Resultados de búsqueda*\n\n";
+
+    contactos.forEach((c, i) => {
+      texto += `*${i + 1}. ${c.nombre}*\n`;
+      texto += `🏢 ${c.cargo}\n`;
+      texto += `📧 ${c.correo || "No disponible"}\n`;
+      texto += `📞 ${c.telefono} Ext. ${c.extension}\n\n`;
+    });
+
+    res.json({ mensaje: texto.trim() });
+
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error consultando directorio" });
+  }
+});
+
 
 /* =====================================================
    🚀 SERVIDOR
