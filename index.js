@@ -281,7 +281,7 @@ app.get("/api/directorio/area", async (req, res) => {
     const { area } = req.query;
     if (!area) return res.status(400).json({ mensaje: "Falta parámetro area" });
 
-    const contactos = await DirectorioContacto.find({
+    const contactos = await RecursosHumanos.find({
       area: new RegExp(area, "i"),
       activo: true
     });
