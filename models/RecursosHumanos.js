@@ -11,7 +11,7 @@ const DirectorioSchema = new mongoose.Schema({
   extension: String,
   activo: Boolean
 }, {
-  collection: "recursos_humanos"
+  collection: "Recursos_humanos"
 });
 
 module.exports = mongoose.model("RecursosHumanos", DirectorioSchema);
