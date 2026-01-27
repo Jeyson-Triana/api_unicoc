@@ -313,7 +313,7 @@ app.get("/api/directorio/nombre", async (req, res) => {
     const { nombre } = req.query;
     if (!nombre) return res.status(400).json({ mensaje: "Falta parámetro nombre" });
 
-    const contactos = await DirectorioContacto.find({
+    const contactos = await RecursosHumanos.find({
       nombre: new RegExp(nombre, "i"),
       activo: true
     });
