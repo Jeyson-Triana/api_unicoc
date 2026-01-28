@@ -16,6 +16,7 @@ const Bienestar = require("./models/Bienestar");
 const RecursosHumanos = require("./models/RecursosHumanos");
 const TicketSoporte = require("./models/TicketSoporte");
 const PQR = require("./models/PQR");
+const Counter = require("./models/Counter");
 
 const app = express();
 
@@ -59,6 +60,15 @@ const Usuario = mongoose.model("Usuario", usuarioSchema);
 app.get("/", (req, res) => {
   res.send("API Demo Educación funcionando ✔");
 });
+
+async function getNextSequence(name) {
+  const counter = await Counter.findByIdAndUpdate(
+    name,
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+  return counter.seq;
+}
 
 /* =====================================================
    👥 USUARIOS
@@ -349,7 +359,9 @@ app.post("/api/soporte/crear-ticket", async (req, res) => {
       return res.status(400).json({ mensaje: "Faltan datos obligatorios" });
     }
 
-    const ticketId = "TK-" + Math.floor(10000 + Math.random() * 90000);
+    const year = new Date().getFullYear();
+    const seq = await getNextSequence(`ticket_${year}`);
+    const ticketId = `TK-${year}-${seq.toString().padStart(4, "0")}`;
 
     const nuevoTicket = new TicketSoporte({
       ticket_id: ticketId,
@@ -399,8 +411,10 @@ app.post("/api/pqr/crear", async (req, res) => {
       return res.status(400).json({ mensaje: "Faltan datos obligatorios" });
     }
 
-    // Generar radicado propio
-    const radicado = "PQR-" + Math.floor(10000 + Math.random() * 90000);
+    // Generar radicado consecutivo
+    const year = new Date().getFullYear();
+    const seq = await getNextSequence(`pqr_${year}`);
+    const radicado = `PQR-${year}-${seq.toString().padStart(4, "0")}`;
 
     const nuevoPQR = new PQR({
       radicado,
