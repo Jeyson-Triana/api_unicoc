@@ -16,7 +16,6 @@ const Bienestar = require("./models/Bienestar");
 const RecursosHumanos = require("./models/RecursosHumanos");
 const TicketSoporte = require("./models/TicketSoporte");
 const PQR = require("./models/PQR");
-const axios = require("axios");
 
 const app = express();
 
