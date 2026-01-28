@@ -14,6 +14,7 @@ const DescuentoPromocion = require("./models/DescuentoPromocion");
 const Decanatura = require("./models/Decanatura");
 const Bienestar = require("./models/Bienestar");
 const RecursosHumanos = require("./models/RecursosHumanos");
+const TicketSoporte = require("./models/TicketSoporte");
 
 const app = express();
 
@@ -338,6 +339,55 @@ app.get("/api/directorio/nombre", async (req, res) => {
   }
 });
 
+// Crear ticket de soporte
+app.post("/api/soporte/crear-ticket", async (req, res) => {
+  try {
+    const { documento, nombre, correo, rol, asunto, mensaje, canal } = req.body;
+
+    if (!asunto || !mensaje) {
+      return res.status(400).json({ mensaje: "Faltan datos obligatorios" });
+    }
+
+    const ticketId = "TK-" + Math.floor(10000 + Math.random() * 90000);
+
+    const nuevoTicket = new TicketSoporte({
+      ticket_id: ticketId,
+      documento,
+      nombre,
+      correo,
+      rol,
+      asunto,
+      mensaje,
+      canal: canal || "Bot Interno"
+    });
+
+    await nuevoTicket.save();
+
+    res.json({
+      ticket: ticketId,
+      mensaje: "Caso creado correctamente"
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error creando ticket" });
+  }
+});
+
+// Consultar estado de ticket
+app.get("/api/soporte/ticket", async (req, res) => {
+  try {
+    const { ticket_id } = req.query;
+    const ticket = await TicketSoporte.findOne({ ticket_id });
+
+    if (!ticket) return res.json({ mensaje: "Ticket no encontrado" });
+
+    res.json(ticket);
+
+  } catch {
+    res.status(500).json({ mensaje: "Error consultando ticket" });
+  }
+});
 
 /* =====================================================
    🚀 SERVIDOR
