@@ -15,6 +15,8 @@ const Decanatura = require("./models/Decanatura");
 const Bienestar = require("./models/Bienestar");
 const RecursosHumanos = require("./models/RecursosHumanos");
 const TicketSoporte = require("./models/TicketSoporte");
+const PQR = require("./models/PQR");
+const axios = require("axios");
 
 const app = express();
 
@@ -386,6 +388,43 @@ app.get("/api/soporte/ticket", async (req, res) => {
 
   } catch {
     res.status(500).json({ mensaje: "Error consultando ticket" });
+  }
+});
+
+// Crear PQR
+app.post("/api/pqr/crear", async (req, res) => {
+  try {
+    const { documento, nombre, correo, telefono, rol, asunto, mensaje, canal } = req.body;
+
+    if (!asunto || !mensaje) {
+      return res.status(400).json({ mensaje: "Faltan datos obligatorios" });
+    }
+
+    // Generar radicado propio
+    const radicado = "PQR-" + Math.floor(10000 + Math.random() * 90000);
+
+    const nuevoPQR = new PQR({
+      radicado,
+      documento,
+      nombre,
+      correo,
+      telefono,
+      rol,
+      asunto,
+      mensaje,
+      canal
+    });
+
+    await nuevoPQR.save();
+
+    res.json({
+      radicado,
+      mensaje: "PQR registrado correctamente"
+    });
+
+  } catch (error) {
+    console.error("ERROR PQR:", error.message);
+    res.status(500).json({ mensaje: "Error registrando PQR" });
   }
 });
 
