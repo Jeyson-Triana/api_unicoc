@@ -18,7 +18,7 @@ const TicketSchema = new mongoose.Schema({
     default: Date.now
   }
 }, {
-  collection: "TicketsSoporte"
+  collection: "Tickets_soporte"
 });
 
-module.exports = mongoose.model("Ticket_soporte", TicketSchema);
+module.exports = mongoose.model("TicketSoporte", TicketSchema);
