@@ -380,7 +380,7 @@ app.get("/api/soporte/ticket", async (req, res) => {
     const { ticket_id } = req.query;
     const ticket = await TicketSoporte.findOne({ ticket_id });
 
-    if (!ticket) return res.json({ mensaje: "Ticket no encontrado" });
+    if (!ticket) return res.json({ mensaje: "Ticket no encontrado", ticket_id });
 
     res.json(ticket);
 
