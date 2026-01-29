@@ -17,6 +17,7 @@ const RecursosHumanos = require("./models/RecursosHumanos");
 const TicketSoporte = require("./models/TicketSoporte");
 const PQR = require("./models/PQR");
 const Counter = require("./models/Counter");
+const Postgrado = require("./models/Postgrado");
 
 const app = express();
 
@@ -438,6 +439,34 @@ app.post("/api/pqr/crear", async (req, res) => {
   } catch (error) {
     console.error("ERROR PQR:", error.message);
     res.status(500).json({ mensaje: "Error registrando PQR" });
+  }
+});
+
+// Postgrado
+app.get("/api/postgrados/activos", async (req, res) => {
+  try {
+    const postgrados = await Postgrado.find({ activo: true });
+
+    if (!postgrados.length) {
+      return res.json({ mensaje: "No hay posgrados activos en este momento." });
+    }
+
+    let texto = "🎓 *Posgrados disponibles en UNICOC*\n\n";
+
+    postgrados.forEach((p, i) => {
+      texto += `*${i + 1}. ${p.nombre}*\n`;
+      texto += `📍 Sede: ${p.sede}\n`;
+      texto += `🕒 Duración: ${p.duracion}\n`;
+      texto += `🏫 Modalidad: ${p.modalidad}\n`;
+      texto += `📅 Jornada: ${p.jornada}\n`;
+      texto += `💰 Matrícula: ${p.matricula}\n\n`;
+    });
+
+    res.json({ mensaje: texto.trim() });
+
+  } catch (error) {
+    console.error("ERROR POSTGRADOS:", error);
+    res.status(500).json({ mensaje: "Error consultando posgrados" });
   }
 });
 
