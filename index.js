@@ -406,7 +406,7 @@ app.get("/api/soporte/ticket", async (req, res) => {
 // Crear PQR
 app.post("/api/pqr/crear", async (req, res) => {
   try {
-    const { documento, nombre, correo, telefono, rol, asunto, mensaje, canal } = req.body;
+    const { documento, nombre, correo, telefono, rol, tipo_pqr, asunto, mensaje, canal } = req.body;
 
     if (!asunto || !mensaje) {
       return res.status(400).json({ mensaje: "Faltan datos obligatorios" });
@@ -424,6 +424,7 @@ app.post("/api/pqr/crear", async (req, res) => {
       correo,
       telefono,
       rol,
+      tipo_pqr,
       asunto,
       mensaje,
       canal
