@@ -483,15 +483,19 @@ app.get("/api/leads/get-programs", async (req, res) => {
     };
 
     programas.forEach(p => {
-      if (!p.nivel) return; 
+      if (!p.nivel) return;
 
-      const texto = `${p.nombre} (${p.sede})`;
+      const item = {
+        id: p._id.toString(),
+        nombre: `${p.nombre} (${p.sede})`
+      };
+
       const nivel = p.nivel.toLowerCase();
 
       if (nivel === "pregrado") {
-        agrupados.pregrado.push(texto);
+        agrupados.pregrado.push(item);
       } else if (nivel === "posgrado") {
-        agrupados.posgrado.push(texto);
+        agrupados.posgrado.push(item);
       }
     });
 
@@ -502,8 +506,6 @@ app.get("/api/leads/get-programs", async (req, res) => {
     res.status(500).json({ mensaje: "Error consultando programas" });
   }
 });
-
-
 
 /* =====================================================
    🚀 SERVIDOR
