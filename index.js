@@ -473,7 +473,7 @@ app.get("/api/postgrados/activos", async (req, res) => {
 });
 
 // Programas Académicos
-app.get("/api/leads/put-lead", async (req, res) =>{
+app.get("/api/leads/get-programs", async (req, res) =>{
   try {
     const programas = await Programa.find({activo: true});
 
