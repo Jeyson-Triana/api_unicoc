@@ -475,14 +475,14 @@ app.get("/api/postgrados/activos", async (req, res) => {
 // Programas Académicos
 app.get("/api/leads/get-programs", async (req, res) =>{
   try {
-    const programas = await Programa.find({activo: true});
+    const programas = await Programa.find({ activo: true });
 
     const agrupados = {
       pregrado: [],
       posgrado: []
     };
 
-    programas.forEach(prog => {
+    programas.forEach(p => {
       const texto = `${p.nombre} (${p.sede})`;
 
       if (p.nivel.toLowerCase() === "pregrado") {
@@ -493,11 +493,13 @@ app.get("/api/leads/get-programs", async (req, res) =>{
     });
 
     res.json(agrupados);
+
   } catch (error) {
     console.error("ERROR PROGRAMAS:", error);
     res.status(500).json({ mensaje: "Error consultando programas" });
   }
 });
+
 
 /* =====================================================
    🚀 SERVIDOR

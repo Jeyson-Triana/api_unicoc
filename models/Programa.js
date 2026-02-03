@@ -1,12 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ProgramaSchema = new mongoose.Schema({
-    nivel: String,
-    nombre : String,
-    sede: String,
-    activo: Boolean
-},{
-    collection: 'Programas'
-});
+  nivel: String,
+  nombre: String,
+  sede: String,
+  activo: Boolean
+}, { collection: "Programas" });
 
-module.exports = mongoose.model('Programa', ProgramaSchema);
+module.exports = mongoose.model("Programa", ProgramaSchema);
