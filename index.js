@@ -18,6 +18,7 @@ const TicketSoporte = require("./models/TicketSoporte");
 const PQR = require("./models/PQR");
 const Counter = require("./models/Counter");
 const Postgrado = require("./models/Postgrado");
+const Programa = require("./models/Programa");
 
 const app = express();
 
@@ -468,6 +469,33 @@ app.get("/api/postgrados/activos", async (req, res) => {
   } catch (error) {
     console.error("ERROR POSTGRADOS:", error);
     res.status(500).json({ mensaje: "Error consultando posgrados" });
+  }
+});
+
+// Programas Académicos
+app.get("/api/leads/put-lead", async (req, res) =>{
+  try {
+    const programas = await Programa.find({activo: true});
+
+    const agrupados = {
+      pregrado: [],
+      posgrado: []
+    };
+
+    programas.forEach(prog => {
+      const texto = `${p.nombre} (${p.sede})`;
+
+      if (p.nivel.toLowerCase() === "pregrado") {
+        agrupados.pregrado.push(texto);
+      } else if (p.nivel.toLowerCase() === "posgrado") {
+        agrupados.posgrado.push(texto);
+      }
+    });
+
+    res.json(agrupados);
+  } catch (error) {
+    console.error("ERROR PROGRAMAS:", error);
+    res.status(500).json({ mensaje: "Error consultando programas" });
   }
 });
 
