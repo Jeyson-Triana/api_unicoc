@@ -473,7 +473,7 @@ app.get("/api/postgrados/activos", async (req, res) => {
 });
 
 // Programas Académicos
-app.get("/api/leads/get-programs", async (req, res) =>{
+app.get("/api/leads/get-programs", async (req, res) => {
   try {
     const programas = await Programa.find({ activo: true });
 
@@ -483,11 +483,14 @@ app.get("/api/leads/get-programs", async (req, res) =>{
     };
 
     programas.forEach(p => {
-      const texto = `${p.nombre} (${p.sede})`;
+      if (!p.nivel) return; 
 
-      if (p.nivel.toLowerCase() === "pregrado") {
+      const texto = `${p.nombre} (${p.sede})`;
+      const nivel = p.nivel.toLowerCase();
+
+      if (nivel === "pregrado") {
         agrupados.pregrado.push(texto);
-      } else if (p.nivel.toLowerCase() === "posgrado") {
+      } else if (nivel === "posgrado") {
         agrupados.posgrado.push(texto);
       }
     });
@@ -499,6 +502,7 @@ app.get("/api/leads/get-programs", async (req, res) =>{
     res.status(500).json({ mensaje: "Error consultando programas" });
   }
 });
+
 
 
 /* =====================================================
