@@ -513,8 +513,13 @@ app.get("/api/leads/get-programs", async (req, res) => {
 
     const filtro = { activo: true };
 
-    if (sede) filtro.sede = sede;
-    if (nivel) filtro.nivel = nivel;
+    if (sede) {
+      filtro.sede = new RegExp(`^${sede}$`, "i");
+    }
+
+    if (nivel) {
+      filtro.nivel = new RegExp(`^${nivel}$`, "i");
+    }
 
     const programas = await Programa.find(filtro)
       .select("_id nombre sede");
@@ -531,6 +536,7 @@ app.get("/api/leads/get-programs", async (req, res) => {
     res.status(500).json({ mensaje: "Error consultando programas" });
   }
 });
+
 
 
 /* =====================================================
