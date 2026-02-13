@@ -473,39 +473,65 @@ app.get("/api/postgrados/activos", async (req, res) => {
 });
 
 // Programas Académicos
+// app.get("/api/leads/get-programs", async (req, res) => {
+//   try {
+//     const programas = await Programa.find({ activo: true });
+
+//     const agrupados = {
+//       pregrado: [],
+//       posgrado: []
+//     };
+
+//     programas.forEach(p => {
+//       if (!p.nivel) return;
+
+//       const item = {
+//         id: p._id.toString(),
+//         nombre: `${p.nombre} (${p.sede})`
+//       };
+
+//       const nivel = p.nivel.toLowerCase();
+
+//       if (nivel === "pregrado") {
+//         agrupados.pregrado.push(item);
+//       } else if (nivel === "posgrado") {
+//         agrupados.posgrado.push(item);
+//       }
+//     });
+
+//     res.json(agrupados);
+
+//   } catch (error) {
+//     console.error("ERROR PROGRAMAS:", error);
+//     res.status(500).json({ mensaje: "Error consultando programas" });
+//   }
+// });
+
 app.get("/api/leads/get-programs", async (req, res) => {
   try {
-    const programas = await Programa.find({ activo: true });
+    const { sede, nivel } = req.query;
 
-    const agrupados = {
-      pregrado: [],
-      posgrado: []
-    };
+    const filtro = { activo: true };
 
-    programas.forEach(p => {
-      if (!p.nivel) return;
+    if (sede) filtro.sede = sede;
+    if (nivel) filtro.nivel = nivel;
 
-      const item = {
-        id: p._id.toString(),
-        nombre: `${p.nombre} (${p.sede})`
-      };
+    const programas = await Programa.find(filtro)
+      .select("_id nombre sede");
 
-      const nivel = p.nivel.toLowerCase();
+    const resultado = programas.map(p => ({
+      id: p._id,
+      nombre: `${p.nombre} (${p.sede})`
+    }));
 
-      if (nivel === "pregrado") {
-        agrupados.pregrado.push(item);
-      } else if (nivel === "posgrado") {
-        agrupados.posgrado.push(item);
-      }
-    });
-
-    res.json(agrupados);
+    res.json(resultado);
 
   } catch (error) {
-    console.error("ERROR PROGRAMAS:", error);
+    console.error(error);
     res.status(500).json({ mensaje: "Error consultando programas" });
   }
 });
+
 
 /* =====================================================
    🚀 SERVIDOR
